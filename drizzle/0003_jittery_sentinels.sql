@@ -1,0 +1,1 @@
+ALTER TYPE "public"."reading_status" ADD VALUE 'releido';
