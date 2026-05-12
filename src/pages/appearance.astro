@@ -112,6 +112,14 @@ if (!user) return Astro.redirect('/login');
       </div>
     </section>
 
+    <!-- Guardar -->
+    <div class="sticky bottom-4 mt-4">
+      <button id="save-btn" class="w-full py-3 rounded-xl font-medium text-sm" style="background:var(--accent);color:var(--accent-text)">
+        Guardar apariencia
+      </button>
+      <p id="save-msg" class="text-center text-xs mt-2 hidden" style="color:var(--text)">✓ Guardado</p>
+    </div>
+
   </div>
 
   <script>
@@ -162,6 +170,12 @@ if (!user) return Astro.redirect('/login');
         applyPrefs(current);
         highlightActive(current);
       });
+    });
+
+    document.getElementById('save-btn')?.addEventListener('click', () => {
+      const msg = document.getElementById('save-msg')!;
+      msg.classList.remove('hidden');
+      setTimeout(() => msg.classList.add('hidden'), 2000);
     });
   </script>
 </Layout>

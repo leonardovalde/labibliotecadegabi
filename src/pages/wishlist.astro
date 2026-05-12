@@ -20,7 +20,7 @@ const entries = await getLibrary({ wishlist: true, userId: user.id });
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
       {entries.map(({ book }) => (
         <a href={`/books/${book.id}`} class="group flex flex-col gap-2">
-          <div class="aspect-[2/3] rounded-lg overflow-hidden bg-gray-800">
+          <div class="cover-ratio-box rounded-lg overflow-hidden bg-gray-800">
             {book.coverUrl ? (
               <img src={book.coverUrl} alt={book.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
             ) : (

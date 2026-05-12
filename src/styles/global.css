@@ -67,3 +67,8 @@
 }
 
 body { background-color: var(--bg); color: var(--text); }
+
+.cover-ratio-box {
+  aspect-ratio: var(--cover-ratio, 2/3);
+  position: relative;
+}

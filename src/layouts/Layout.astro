@@ -58,7 +58,6 @@ const { title = 'La Biblioteca de Gabi' } = Astro.props;
                 <div id="user-dropdown" class="hidden absolute right-0 top-full mt-1 w-44 rounded-lg shadow-md z-50" style="background:var(--bg-card);border:1px solid var(--border)">
                   <a href={`/u/${user.username}`} class="block px-4 py-2.5 text-sm rounded-t-lg hover:opacity-70" style="color:var(--text)">Ver perfil</a>
                   <a href="/settings" class="block px-4 py-2.5 text-sm hover:opacity-70" style="color:var(--text)">Configuración</a>
-                  <a href="/appearance" class="block px-4 py-2.5 text-sm hover:opacity-70" style="color:var(--text)">🎨 Apariencia</a>
                   <form method="post" action="/api/auth/logout">
                     <button class="w-full text-left px-4 py-2.5 text-sm rounded-b-lg hover:opacity-70" style="color:#ef4444">Cerrar sesión</button>
                   </form>
