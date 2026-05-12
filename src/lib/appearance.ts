@@ -1,7 +1,7 @@
 // Appearance preferences stored in localStorage
 export interface AppearancePrefs {
   theme: 'clasica' | 'nocturna' | 'bosque' | 'cielo' | 'rosa' | 'sepia';
-  titleFont: 'muthiara' | 'playfair' | 'lora' | 'merriweather' | 'quicksand' | 'baskerville';
+  titleFont: 'muthiara' | 'maquina' | 'playfair' | 'lora' | 'merriweather' | 'quicksand' | 'baskerville';
   bodyFont: 'inter' | 'georgia' | 'nunito';
   ratingIcon: 'star' | 'leaf' | 'heart' | 'flower' | 'book';
   coverRatio: 'poster' | 'square';
@@ -25,6 +25,7 @@ export const RATING_ICONS: Record<AppearancePrefs['ratingIcon'], string> = {
 
 export const TITLE_FONTS: Record<AppearancePrefs['titleFont'], string> = {
   muthiara:     "'Muthiara', cursive",
+  maquina:      "'MaquinaDeEscribir', monospace",
   playfair:     "'Playfair Display', serif",
   lora:         "'Lora', serif",
   merriweather: "'Merriweather', serif",

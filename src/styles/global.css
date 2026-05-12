@@ -8,6 +8,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'MaquinaDeEscribir';
+  src: url('/fonts/MaquinaDeEscribir.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg: #fafaf9;
   --bg-card: #ffffff;
