@@ -57,11 +57,37 @@ const entries = await getLibrary({ userId: user.id });
     <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
       {entries.map(({ book, userBook }) => (
         <a href={isSelf ? `/books/${book.id}` : '#'} class="group flex flex-col gap-2">
-          <div class="aspect-[2/3] rounded-lg overflow-hidden bg-stone-100 border border-stone-200 shadow-sm">
+          <div class="relative aspect-[2/3] rounded-lg overflow-hidden bg-stone-100 border border-stone-200 shadow-sm">
             {book.coverUrl
               ? <img src={book.coverUrl} alt={book.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               : <div class="w-full h-full flex items-center justify-center text-stone-300 text-3xl">📖</div>
             }
+            {userBook?.status && (
+              <div class={`absolute top-1.5 left-1.5 text-white text-xs px-1.5 py-0.5 rounded font-medium ${
+                userBook.status === 'leyendo' ? 'bg-blue-500' :
+                userBook.status === 'releyendo' ? 'bg-indigo-500' :
+                userBook.status === 'leido' ? 'bg-green-600' :
+                userBook.status === 'releido' ? 'bg-emerald-700' :
+                userBook.status === 'abandonado' ? 'bg-red-600' :
+                userBook.status === 'pausado' ? 'bg-yellow-500' :
+                'bg-stone-400'
+              }`}>
+                {{
+                  quiero_leer: 'Quiero leer',
+                  leyendo: 'Leyendo',
+                  releyendo: 'Releyendo',
+                  leido: 'Leído',
+                  releido: 'Releído',
+                  abandonado: 'Abandonado',
+                  pausado: 'Pausado',
+                }[userBook.status]}
+              </div>
+            )}
+            {userBook?.rating && (
+              <div class="absolute bottom-1.5 right-1.5 bg-black/60 text-yellow-400 text-xs px-1 py-0.5 rounded">
+                {'★'.repeat(userBook.rating)}
+              </div>
+            )}
           </div>
           <p class="text-xs font-medium leading-tight line-clamp-2 text-stone-700">{book.title}</p>
         </a>
