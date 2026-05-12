@@ -1,7 +1,7 @@
 // Appearance preferences stored in localStorage
 export interface AppearancePrefs {
   theme: 'clasica' | 'nocturna' | 'bosque' | 'cielo' | 'rosa' | 'sepia';
-  titleFont: 'playfair' | 'lora' | 'merriweather' | 'quicksand' | 'baskerville';
+  titleFont: 'muthiara' | 'playfair' | 'lora' | 'merriweather' | 'quicksand' | 'baskerville';
   bodyFont: 'inter' | 'georgia' | 'nunito';
   ratingIcon: 'star' | 'leaf' | 'heart' | 'flower' | 'book';
   coverRatio: 'poster' | 'square';
@@ -9,7 +9,7 @@ export interface AppearancePrefs {
 
 export const DEFAULTS: AppearancePrefs = {
   theme: 'clasica',
-  titleFont: 'playfair',
+  titleFont: 'muthiara',
   bodyFont: 'inter',
   ratingIcon: 'star',
   coverRatio: 'poster',
@@ -24,17 +24,18 @@ export const RATING_ICONS: Record<AppearancePrefs['ratingIcon'], string> = {
 };
 
 export const TITLE_FONTS: Record<AppearancePrefs['titleFont'], string> = {
-  playfair: "'Playfair Display', serif",
-  lora: "'Lora', serif",
+  muthiara:     "'Muthiara', cursive",
+  playfair:     "'Playfair Display', serif",
+  lora:         "'Lora', serif",
   merriweather: "'Merriweather', serif",
-  quicksand: "'Quicksand', sans-serif",
-  baskerville: "'Libre Baskerville', serif",
+  quicksand:    "'Quicksand', sans-serif",
+  baskerville:  "'Libre Baskerville', serif",
 };
 
 export const BODY_FONTS: Record<AppearancePrefs['bodyFont'], string> = {
-  inter: "'Inter', sans-serif",
+  inter:   "'Inter', sans-serif",
   georgia: "Georgia, serif",
-  nunito: "'Nunito', sans-serif",
+  nunito:  "'Nunito', sans-serif",
 };
 
 export const GOOGLE_FONTS_URL =

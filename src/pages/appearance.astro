@@ -38,11 +38,12 @@ if (!user) return Astro.redirect('/login');
       <h3 class="font-semibold mb-4" style="color:var(--text)">Fuente del título</h3>
       <div class="space-y-2">
         {([
-          { id: 'playfair',     label: 'Playfair Display', sample: 'La Biblioteca de Gabi' },
-          { id: 'lora',         label: 'Lora',             sample: 'La Biblioteca de Gabi' },
-          { id: 'merriweather', label: 'Merriweather',     sample: 'La Biblioteca de Gabi' },
-          { id: 'quicksand',    label: 'Quicksand',        sample: 'La Biblioteca de Gabi' },
-          { id: 'baskerville',  label: 'Libre Baskerville',sample: 'La Biblioteca de Gabi' },
+          { id: 'muthiara',     label: 'Muthiara',          sample: 'La Biblioteca de Gabi' },
+          { id: 'playfair',     label: 'Playfair Display',   sample: 'La Biblioteca de Gabi' },
+          { id: 'lora',         label: 'Lora',               sample: 'La Biblioteca de Gabi' },
+          { id: 'merriweather', label: 'Merriweather',       sample: 'La Biblioteca de Gabi' },
+          { id: 'quicksand',    label: 'Quicksand',          sample: 'La Biblioteca de Gabi' },
+          { id: 'baskerville',  label: 'Libre Baskerville',  sample: 'La Biblioteca de Gabi' },
         ] as const).map(f => (
           <button data-pref="titleFont" data-value={f.id}
             class="pref-btn w-full text-left px-4 py-3 rounded-lg border transition-all"
