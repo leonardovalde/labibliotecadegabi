@@ -1,0 +1,183 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { RATING_ICONS, TITLE_FONTS, BODY_FONTS } from '../lib/appearance';
+
+const user = Astro.locals.user;
+if (!user) return Astro.redirect('/login');
+---
+
+<Layout title="Apariencia">
+  <div class="max-w-xl mx-auto">
+    <a href="/settings" class="text-sm mb-6 inline-block opacity-50 hover:opacity-100">← Configuración</a>
+    <h2 class="text-2xl font-bold mb-6" style="color:var(--text)">Apariencia</h2>
+
+    <!-- Paleta -->
+    <section class="rounded-xl p-6 mb-4" style="background:var(--bg-card);border:1px solid var(--border)">
+      <h3 class="font-semibold mb-4" style="color:var(--text)">Paleta de colores</h3>
+      <div class="grid grid-cols-3 gap-3">
+        {[
+          { id: 'clasica',  label: 'Clásica',  bg: '#fafaf9', accent: '#292524' },
+          { id: 'nocturna', label: 'Nocturna', bg: '#0f0f0f', accent: '#e8e8e8' },
+          { id: 'bosque',   label: 'Bosque',   bg: '#f2f4f0', accent: '#2d4a25' },
+          { id: 'cielo',    label: 'Cielo',    bg: '#f0f4f8', accent: '#1e4a7a' },
+          { id: 'rosa',     label: 'Rosa',     bg: '#fdf4f5', accent: '#8b3a4a' },
+          { id: 'sepia',    label: 'Sepia',    bg: '#f5efe6', accent: '#5c3a1a' },
+        ].map(p => (
+          <button data-pref="theme" data-value={p.id}
+            class="pref-btn rounded-lg p-3 text-xs font-medium border-2 transition-all"
+            style={`background:${p.bg};color:${p.accent};border-color:${p.accent}20`}>
+            <div class="w-full h-6 rounded mb-2" style={`background:${p.accent}`}></div>
+            {p.label}
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <!-- Fuente del título -->
+    <section class="rounded-xl p-6 mb-4" style="background:var(--bg-card);border:1px solid var(--border)">
+      <h3 class="font-semibold mb-4" style="color:var(--text)">Fuente del título</h3>
+      <div class="space-y-2">
+        {([
+          { id: 'muthiara',     label: 'Muthiara',           sample: 'La Biblioteca de Gabi' },
+          { id: 'maquina',      label: 'Máquina de escribir', sample: 'La Biblioteca de Gabi' },
+          { id: 'playfair',     label: 'Playfair Display',   sample: 'La Biblioteca de Gabi' },
+          { id: 'lora',         label: 'Lora',               sample: 'La Biblioteca de Gabi' },
+          { id: 'merriweather', label: 'Merriweather',       sample: 'La Biblioteca de Gabi' },
+          { id: 'quicksand',    label: 'Quicksand',          sample: 'La Biblioteca de Gabi' },
+          { id: 'baskerville',  label: 'Libre Baskerville',  sample: 'La Biblioteca de Gabi' },
+        ] as const).map(f => (
+          <button data-pref="titleFont" data-value={f.id}
+            class="pref-btn w-full text-left px-4 py-3 rounded-lg border transition-all"
+            style={`font-family:${TITLE_FONTS[f.id]};font-size:1.1rem;color:var(--text);border-color:var(--border);background:var(--bg)`}>
+            {f.sample}
+            <span class="block text-xs mt-0.5 opacity-40" style="font-family:var(--body-font)">{f.label}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <!-- Fuente del cuerpo -->
+    <section class="rounded-xl p-6 mb-4" style="background:var(--bg-card);border:1px solid var(--border)">
+      <h3 class="font-semibold mb-4" style="color:var(--text)">Fuente del texto</h3>
+      <div class="space-y-2">
+        {([
+          { id: 'inter',   label: 'Inter',   sample: 'El texto de tu biblioteca se verá así.' },
+          { id: 'georgia', label: 'Georgia', sample: 'El texto de tu biblioteca se verá así.' },
+          { id: 'nunito',  label: 'Nunito',  sample: 'El texto de tu biblioteca se verá así.' },
+        ] as const).map(f => (
+          <button data-pref="bodyFont" data-value={f.id}
+            class="pref-btn w-full text-left px-4 py-3 rounded-lg border transition-all"
+            style={`font-family:${BODY_FONTS[f.id]};color:var(--text);border-color:var(--border);background:var(--bg)`}>
+            {f.sample}
+            <span class="block text-xs mt-0.5 opacity-40">{f.label}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <!-- Ícono de calificación -->
+    <section class="rounded-xl p-6 mb-4" style="background:var(--bg-card);border:1px solid var(--border)">
+      <h3 class="font-semibold mb-4" style="color:var(--text)">Ícono de calificación</h3>
+      <div class="flex gap-3 flex-wrap">
+        {([
+          { id: 'star',   icon: '★★★★★', label: 'Estrellas' },
+          { id: 'leaf',   icon: '🌿🌿🌿🌿🌿', label: 'Hojas' },
+          { id: 'heart',  icon: '❤️❤️❤️❤️❤️', label: 'Corazones' },
+          { id: 'flower', icon: '🌸🌸🌸🌸🌸', label: 'Flores' },
+          { id: 'book',   icon: '📖📖📖📖📖', label: 'Libros' },
+        ] as const).map(r => (
+          <button data-pref="ratingIcon" data-value={r.id}
+            class="pref-btn flex flex-col items-center gap-1 px-4 py-3 rounded-lg border transition-all"
+            style="border-color:var(--border);background:var(--bg);color:var(--text)">
+            <span class="text-lg tracking-tight">{r.icon}</span>
+            <span class="text-xs opacity-60">{r.label}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <!-- Formato portada -->
+    <section class="rounded-xl p-6 mb-4" style="background:var(--bg-card);border:1px solid var(--border)">
+      <h3 class="font-semibold mb-4" style="color:var(--text)">Formato de portada</h3>
+      <div class="flex gap-4">
+        {([
+          { id: 'poster', label: 'Póster', ratio: 'aspect-[2/3]' },
+          { id: 'square', label: 'Cuadrado', ratio: 'aspect-square' },
+        ] as const).map(c => (
+          <button data-pref="coverRatio" data-value={c.id}
+            class={`pref-btn flex flex-col items-center gap-2 p-3 rounded-lg border transition-all`}
+            style="border-color:var(--border);background:var(--bg);color:var(--text)">
+            <div class={`${c.ratio} w-16 rounded`} style="background:var(--border)"></div>
+            <span class="text-xs">{c.label}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <!-- Guardar -->
+    <div class="sticky bottom-4 mt-4">
+      <button id="save-btn" class="w-full py-3 rounded-xl font-medium text-sm" style="background:var(--accent);color:var(--accent-text)">
+        Guardar apariencia
+      </button>
+      <p id="save-msg" class="text-center text-xs mt-2 hidden" style="color:var(--text)">✓ Guardado</p>
+    </div>
+
+  </div>
+
+  <script>
+    import { DEFAULTS, TITLE_FONTS, BODY_FONTS, GOOGLE_FONTS_URL } from '../lib/appearance';
+    import type { AppearancePrefs } from '../lib/appearance';
+
+    function getPrefs(): AppearancePrefs {
+      try { return { ...DEFAULTS, ...JSON.parse(localStorage.getItem('prefs') || '{}') }; }
+      catch { return DEFAULTS; }
+    }
+
+    function savePrefs(prefs: AppearancePrefs) {
+      localStorage.setItem('prefs', JSON.stringify(prefs));
+    }
+
+    function applyPrefs(prefs: AppearancePrefs) {
+      document.documentElement.setAttribute('data-theme', prefs.theme);
+      document.documentElement.style.setProperty('--title-font', TITLE_FONTS[prefs.titleFont]);
+      document.documentElement.style.setProperty('--body-font', BODY_FONTS[prefs.bodyFont]);
+      document.documentElement.style.setProperty('--cover-ratio', prefs.coverRatio === 'square' ? '1/1' : '2/3');
+      document.documentElement.style.setProperty('--rating-icon-pref', prefs.ratingIcon);
+      localStorage.setItem('theme', prefs.theme);
+    }
+
+    function highlightActive(prefs: AppearancePrefs) {
+      document.querySelectorAll('.pref-btn').forEach(btn => {
+        const el = btn as HTMLElement;
+        const pref = el.dataset.pref as keyof AppearancePrefs;
+        const val = el.dataset.value;
+        const active = prefs[pref] === val;
+        el.style.outline = active ? '2px solid var(--accent)' : 'none';
+        el.style.outlineOffset = '2px';
+      });
+    }
+
+    const prefs = getPrefs();
+    applyPrefs(prefs);
+    highlightActive(prefs);
+
+    document.querySelectorAll('.pref-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const el = btn as HTMLElement;
+        const pref = el.dataset.pref as keyof AppearancePrefs;
+        const val = el.dataset.value as any;
+        const current = getPrefs();
+        current[pref] = val;
+        savePrefs(current);
+        applyPrefs(current);
+        highlightActive(current);
+      });
+    });
+
+    document.getElementById('save-btn')?.addEventListener('click', () => {
+      const msg = document.getElementById('save-msg')!;
+      msg.classList.remove('hidden');
+      setTimeout(() => msg.classList.add('hidden'), 2000);
+    });
+  </script>
+</Layout>
