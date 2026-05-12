@@ -61,9 +61,9 @@ if (!user) return Astro.redirect('/login');
       <h3 class="font-semibold mb-4" style="color:var(--text)">Fuente del texto</h3>
       <div class="space-y-2">
         {([
-          { id: 'inter',   label: 'Inter',   sample: 'El texto de tu biblioteca se verá así.' },
-          { id: 'georgia', label: 'Georgia', sample: 'El texto de tu biblioteca se verá así.' },
-          { id: 'nunito',  label: 'Nunito',  sample: 'El texto de tu biblioteca se verá así.' },
+          { id: 'inter',   label: 'Inter',        sample: 'El texto de tu biblioteca se verá así.' },
+          { id: 'georgia', label: 'Georgia',       sample: 'El texto de tu biblioteca se verá así.' },
+          { id: 'crimson', label: 'Crimson Text',  sample: 'El texto de tu biblioteca se verá así.' },
         ] as const).map(f => (
           <button data-pref="bodyFont" data-value={f.id}
             class="pref-btn w-full text-left px-4 py-3 rounded-lg border transition-all"

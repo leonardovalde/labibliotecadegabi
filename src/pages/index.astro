@@ -63,9 +63,9 @@ const STATUS_LABELS: Record<string, string> = {
       {entries.map(({ book, userBook }) => (
         <a href={`/books/${book.id}`} class="group flex flex-col gap-2">
           <div class="relative cover-ratio-box rounded-lg overflow-hidden bg-stone-100 shadow-sm">
-            {book.coverUrl ? (
+            {(userBook?.coverUrl ?? book.coverUrl) ? (
               <img
-                src={book.coverUrl}
+                src={userBook?.coverUrl ?? book.coverUrl}
                 alt={book.title}
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
@@ -73,7 +73,7 @@ const STATUS_LABELS: Record<string, string> = {
               <div class="w-full h-full flex items-center justify-center text-stone-300 text-4xl">📖</div>
             )}
             {userBook?.rating && (
-              <div class="absolute bottom-2 right-2 bg-black/60 text-yellow-400 text-xs px-1.5 py-0.5 rounded">
+              <div class="rating-display absolute bottom-2 right-2 bg-black/60 text-yellow-400 text-xs px-1.5 py-0.5 rounded">
                 {'★'.repeat(userBook.rating)}
               </div>
             )}
