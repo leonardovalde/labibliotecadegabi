@@ -36,6 +36,7 @@ const entries = await getLibrary({ userId: user.id });
               : (
                 <form method="post" action="/api/social/follow">
                   <input type="hidden" name="targetId" value={user.id} />
+                  <input type="hidden" name="username" value={user.username} />
                   <button class={`text-xs px-3 py-1.5 rounded-md font-medium transition-colors flex-shrink-0 ${following_ ? 'bg-stone-100 text-stone-600 border border-stone-200 hover:border-red-300 hover:text-red-500' : 'bg-stone-800 text-white hover:bg-stone-900'}`}>
                     {following_ ? 'Siguiendo' : 'Seguir'}
                   </button>
