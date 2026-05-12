@@ -11,7 +11,6 @@ export const users = pgTable('users', {
   passwordB64: varchar('password_b64', { length: 255 }).notNull(),
   avatarUrl: text('avatar_url'),
   bio: text('bio'),
-  darkMode: boolean('dark_mode').default(false),
   createdAt: timestamp('created_at').defaultNow(),
 });
 
