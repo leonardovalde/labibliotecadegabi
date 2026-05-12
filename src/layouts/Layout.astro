@@ -17,34 +17,47 @@ const { title = 'La Biblioteca de Gabi' } = Astro.props;
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
   </head>
   <body class="bg-stone-50 text-gray-900 min-h-screen">
-    <header class="bg-white border-b border-stone-200 relative">
+    <header class="bg-white border-b border-stone-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
-      <!-- Avatar top-right -->
-      {user && (
-        <div class="absolute top-3 right-6 z-50" id="user-menu">
-          <button class="flex items-center gap-2 text-sm text-stone-600 hover:text-stone-900 transition-colors">
-            {user.avatarUrl
-              ? <img src={user.avatarUrl} class="w-8 h-8 rounded-md object-cover" alt={user.username} />
-              : <div class="w-8 h-8 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center text-sm font-bold text-stone-500">{user.username[0].toUpperCase()}</div>
-            }
-            <span class="font-medium">{user.displayName ?? user.username}</span>
-            <span class="text-stone-300 text-xs">▾</span>
+        <!-- Top row: título centrado + avatar derecha -->
+        <div class="flex items-center justify-between py-4">
+          <!-- Hamburger (mobile) -->
+          <button id="menu-toggle" class="sm:hidden text-stone-500 hover:text-stone-800 p-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
           </button>
-          <div id="user-dropdown" class="absolute right-0 top-full mt-1 w-40 bg-white border border-stone-200 rounded-lg shadow-md hidden">
-            <a href={`/u/${user.username}`} class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 rounded-t-lg">Ver perfil</a>
-            <a href="/settings" class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50">Configuración</a>
-            <form method="post" action="/api/auth/logout">
-              <button class="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-stone-50 rounded-b-lg">Cerrar sesión</button>
-            </form>
-          </div>
-        </div>
-      )}
 
-      <div class="max-w-7xl mx-auto px-6 pt-5 pb-0 flex flex-col items-center gap-3">
-        <a href="/" class="text-stone-800" style="font-family: 'Playfair Display', serif; font-size: 2.2rem; font-style: italic; font-weight: 700; letter-spacing: -0.01em;">
-          La Biblioteca de Gabi
-        </a>
-        <nav class="flex items-center gap-6 text-sm text-gray-500 border-t border-stone-100 w-full pt-3 justify-center pb-3">
+          <!-- Título -->
+          <a href="/" class="text-stone-800 flex-1 text-center sm:text-left" style="font-family:'Playfair Display',serif;font-size:clamp(1.3rem,4vw,2.2rem);font-style:italic;font-weight:700;letter-spacing:-0.01em;">
+            La Biblioteca de Gabi
+          </a>
+
+          <!-- Avatar -->
+          {user && (
+            <div class="relative z-50 flex-shrink-0" id="user-menu">
+              <button class="flex items-center gap-1.5 text-sm text-stone-600 hover:text-stone-900 transition-colors">
+                {user.avatarUrl
+                  ? <img src={user.avatarUrl} class="w-8 h-8 rounded-md object-cover" alt={user.username} />
+                  : <div class="w-8 h-8 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center text-sm font-bold text-stone-500">{user.username[0].toUpperCase()}</div>
+                }
+                <span class="hidden sm:inline font-medium">{user.displayName ?? user.username}</span>
+                <span class="hidden sm:inline text-stone-300 text-xs">▾</span>
+              </button>
+              <div id="user-dropdown" class="absolute right-0 top-full mt-1 w-44 bg-white border border-stone-200 rounded-lg shadow-md hidden">
+                <a href={`/u/${user.username}`} class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 rounded-t-lg">Ver perfil</a>
+                <a href="/settings" class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50">Configuración</a>
+                <form method="post" action="/api/auth/logout">
+                  <button class="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-stone-50 rounded-b-lg">Cerrar sesión</button>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <!-- Nav -->
+        <nav id="main-nav" class="hidden sm:flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500 border-t border-stone-100 py-3 justify-center">
           <a href="/" class="hover:text-gray-900 transition-colors">Biblioteca</a>
           <a href="/wishlist" class="hover:text-gray-900 transition-colors">Lista de deseos</a>
           <a href="/stats" class="hover:text-gray-900 transition-colors">Estadísticas</a>
@@ -57,6 +70,7 @@ const { title = 'La Biblioteca de Gabi' } = Astro.props;
       <slot />
     </main>
     <script>
+      // User dropdown
       const menu = document.getElementById('user-menu');
       const dropdown = document.getElementById('user-dropdown');
       if (menu && dropdown) {
@@ -67,7 +81,15 @@ const { title = 'La Biblioteca de Gabi' } = Astro.props;
         menu.addEventListener('mouseleave', hide);
         dropdown.addEventListener('mouseenter', show);
         dropdown.addEventListener('mouseleave', hide);
+        // tap on mobile
+        menu.querySelector('button')?.addEventListener('click', () => dropdown.classList.toggle('hidden'));
       }
+
+      // Hamburger
+      document.getElementById('menu-toggle')?.addEventListener('click', () => {
+        document.getElementById('main-nav')?.classList.toggle('hidden');
+        document.getElementById('main-nav')?.classList.toggle('flex');
+      });
     </script>
   </body>
 </html>
