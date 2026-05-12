@@ -91,7 +91,7 @@ const results = query ? await searchBooks(query) : [];
       if (val.length < 3) return;
       timer = setTimeout(() => {
         window.location.href = `/books/search?q=${encodeURIComponent(val)}`;
-      }, 500);
+      }, 1000);
     });
   </script>
 </Layout>
