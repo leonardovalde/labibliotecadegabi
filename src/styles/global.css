@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: 'Muthiara';
-  src: url('/fonts/Muthiara.ttf') format('truetype');
+  src: url('/fonts/Muthiara.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
