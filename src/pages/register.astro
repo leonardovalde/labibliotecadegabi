@@ -18,18 +18,18 @@ const error = Astro.url.searchParams.get('error');
       La Biblioteca de Gabi
     </h1>
     {error && <p class="text-red-500 text-sm mb-4 text-center">{error}</p>}
-    <form method="post" action="/api/auth/register" class="space-y-4">
+    <form method="post" action="/api/auth/register" class="space-y-4" autocomplete="off">
       <div>
         <label class="text-xs text-stone-500 block mb-1">Usuario</label>
-        <input name="username" required class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800" />
+        <input name="username" required autocomplete="off" class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800" />
       </div>
       <div>
         <label class="text-xs text-stone-500 block mb-1">Nombre a mostrar</label>
-        <input name="displayName" class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800" />
+        <input name="displayName" autocomplete="off" class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800" />
       </div>
       <div>
         <label class="text-xs text-stone-500 block mb-1">Contraseña</label>
-        <input name="password" type="password" required class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800" />
+        <input name="password" type="password" required autocomplete="new-password" class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800" />
       </div>
       <button class="w-full bg-stone-800 text-white py-2 rounded-md font-medium hover:bg-stone-900 transition-colors">Crear cuenta</button>
     </form>
