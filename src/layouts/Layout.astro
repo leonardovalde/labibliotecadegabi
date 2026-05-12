@@ -16,53 +16,56 @@ const { title = 'La Biblioteca de Gabi' } = Astro.props;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-stone-50 text-gray-900 min-h-screen">
-    <header class="bg-white border-b border-stone-200">
+  <body class={`${user?.darkMode ? 'dark' : ''} bg-stone-50 dark:bg-stone-950 text-gray-900 dark:text-stone-100 min-h-screen`}>
+    <header class="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800">
       <div class="max-w-7xl mx-auto px-4 sm:px-6">
-
-        <!-- Top row: título centrado + avatar derecha -->
         <div class="flex items-center justify-between py-4">
-          <!-- Hamburger (mobile) -->
-          <button id="menu-toggle" class="sm:hidden text-stone-500 hover:text-stone-800 p-1">
+          <button id="menu-toggle" class="sm:hidden text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-white p-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
           </button>
 
-          <!-- Título -->
-          <a href="/" class="text-stone-800 flex-1 text-center sm:text-left" style="font-family:'Playfair Display',serif;font-size:clamp(1.3rem,4vw,2.2rem);font-style:italic;font-weight:700;letter-spacing:-0.01em;">
+          <a href="/" class="text-stone-800 dark:text-stone-100 flex-1 text-center sm:text-left" style="font-family:'Playfair Display',serif;font-size:clamp(1.3rem,4vw,2.2rem);font-style:italic;font-weight:700;letter-spacing:-0.01em;">
             La Biblioteca de Gabi
           </a>
 
-          <!-- Avatar -->
-          {user && (
-            <div class="relative z-50 flex-shrink-0" id="user-menu">
-              <button class="flex items-center gap-1.5 text-sm text-stone-600 hover:text-stone-900 transition-colors">
-                {user.avatarUrl
-                  ? <img src={user.avatarUrl} class="w-8 h-8 rounded-md object-cover" alt={user.username} />
-                  : <div class="w-8 h-8 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center text-sm font-bold text-stone-500">{user.username[0].toUpperCase()}</div>
-                }
-                <span class="hidden sm:inline font-medium">{user.displayName ?? user.username}</span>
-                <span class="hidden sm:inline text-stone-300 text-xs">▾</span>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <!-- Dark mode toggle -->
+            {user && (
+              <button id="dark-toggle" class="text-stone-400 hover:text-stone-700 dark:text-stone-400 dark:hover:text-white p-1.5 rounded-md transition-colors" title="Modo nocturno">
+                {user.darkMode ? '☀️' : '🌙'}
               </button>
-              <div id="user-dropdown" class="absolute right-0 top-full mt-1 w-44 bg-white border border-stone-200 rounded-lg shadow-md hidden">
-                <a href={`/u/${user.username}`} class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 rounded-t-lg">Ver perfil</a>
-                <a href="/settings" class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50">Configuración</a>
-                <form method="post" action="/api/auth/logout">
-                  <button class="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-stone-50 rounded-b-lg">Cerrar sesión</button>
-                </form>
+            )}
+
+            {user && (
+              <div class="relative z-50" id="user-menu">
+                <button class="flex items-center gap-1.5 text-sm text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white transition-colors">
+                  {user.avatarUrl
+                    ? <img src={user.avatarUrl} class="w-8 h-8 rounded-md object-cover" alt={user.username} />
+                    : <div class="w-8 h-8 rounded-md bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center text-sm font-bold text-stone-500">{user.username[0].toUpperCase()}</div>
+                  }
+                  <span class="hidden sm:inline font-medium">{user.displayName ?? user.username}</span>
+                  <span class="hidden sm:inline text-stone-300 text-xs">▾</span>
+                </button>
+                <div id="user-dropdown" class="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-lg shadow-md hidden">
+                  <a href={`/u/${user.username}`} class="block px-4 py-2.5 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 rounded-t-lg">Ver perfil</a>
+                  <a href="/settings" class="block px-4 py-2.5 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800">Configuración</a>
+                  <form method="post" action="/api/auth/logout">
+                    <button class="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-stone-50 dark:hover:bg-stone-800 rounded-b-lg">Cerrar sesión</button>
+                  </form>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
-        <!-- Nav -->
-        <nav id="main-nav" class="hidden sm:flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500 border-t border-stone-100 py-3 justify-center">
-          <a href="/" class="hover:text-gray-900 transition-colors">Biblioteca</a>
-          <a href="/wishlist" class="hover:text-gray-900 transition-colors">Lista de deseos</a>
-          <a href="/stats" class="hover:text-gray-900 transition-colors">Estadísticas</a>
-          <a href="/explore" class="hover:text-gray-900 transition-colors">Explorar</a>
-          <a href="/books/search" class="bg-stone-800 text-white px-4 py-1.5 rounded-md font-medium hover:bg-stone-900 transition-colors">+ Agregar libro</a>
+        <nav id="main-nav" class="hidden sm:flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500 dark:text-stone-400 border-t border-stone-100 dark:border-stone-800 py-3 justify-center">
+          <a href="/" class="hover:text-gray-900 dark:hover:text-white transition-colors">Biblioteca</a>
+          <a href="/wishlist" class="hover:text-gray-900 dark:hover:text-white transition-colors">Lista de deseos</a>
+          <a href="/stats" class="hover:text-gray-900 dark:hover:text-white transition-colors">Estadísticas</a>
+          <a href="/explore" class="hover:text-gray-900 dark:hover:text-white transition-colors">Explorar</a>
+          <a href="/books/search" class="bg-stone-800 dark:bg-stone-100 text-white dark:text-stone-900 px-4 py-1.5 rounded-md font-medium hover:bg-stone-900 dark:hover:bg-white transition-colors">+ Agregar libro</a>
         </nav>
       </div>
     </header>
@@ -85,7 +88,11 @@ const { title = 'La Biblioteca de Gabi' } = Astro.props;
         menu.querySelector('button')?.addEventListener('click', () => dropdown.classList.toggle('hidden'));
       }
 
-      // Hamburger
+      // Dark mode toggle
+      document.getElementById('dark-toggle')?.addEventListener('click', async () => {
+        await fetch('/api/auth/toggle-dark', { method: 'POST' });
+        document.documentElement.location.reload();
+      });
       document.getElementById('menu-toggle')?.addEventListener('click', () => {
         document.getElementById('main-nav')?.classList.toggle('hidden');
         document.getElementById('main-nav')?.classList.toggle('flex');
