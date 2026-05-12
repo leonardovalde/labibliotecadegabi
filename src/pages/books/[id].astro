@@ -10,7 +10,7 @@ const data = await getBookWithDetails(id!, currentUser.id);
 if (!data) return Astro.redirect('/');
 
 const { book, authors, userBook, tags } = data;
-const coverUrl = userBook?.coverUrl ?? coverUrl;
+const coverUrl = userBook?.coverUrl ?? book.coverUrl;
 
 const STATUS_OPTIONS = [
   { value: 'quiero_leer', label: 'Quiero leer' },
