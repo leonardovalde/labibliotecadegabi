@@ -61,6 +61,7 @@ export const userBooks = pgTable('user_books', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   bookId: uuid('book_id').notNull().references(() => books.id, { onDelete: 'cascade' }),
+  coverUrl: text('cover_url'),
   status: readingStatusEnum('status').default('quiero_leer'),
   format: bookFormatEnum('format').default('fisico'),
   wishlist: boolean('wishlist').default(false),

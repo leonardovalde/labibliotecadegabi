@@ -14,11 +14,11 @@ const { title = 'La Biblioteca de Gabi' } = Astro.props;
     <title>{title} — La Biblioteca de Gabi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Lora:wght@400;700&family=Merriweather:wght@400;700&family=Quicksand:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;500&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet" />
     <!-- Apply prefs before paint -->
     <script is:inline>
       const TITLE_FONTS = { muthiara:"'Muthiara',cursive", maquina:"'MaquinaDeEscribir',monospace", playfair:"'Playfair Display',serif", lora:"'Lora',serif", merriweather:"'Merriweather',serif", quicksand:"'Quicksand',sans-serif", baskerville:"'Libre Baskerville',serif" };
-      const BODY_FONTS  = { inter:"'Inter',sans-serif", georgia:"Georgia,serif", nunito:"'Nunito',sans-serif" };
+      const BODY_FONTS  = { inter:"'Inter',sans-serif", georgia:"Georgia,serif", crimson:"'Crimson Text',serif" };
       try {
         const p = JSON.parse(localStorage.getItem('prefs') || '{}');
         if (p.theme) document.documentElement.setAttribute('data-theme', p.theme);
@@ -82,6 +82,18 @@ const { title = 'La Biblioteca de Gabi' } = Astro.props;
     </main>
 
     <script>
+      // Apply rating icons from prefs
+      const ICONS: Record<string, string> = { star:'★', leaf:'🌿', heart:'❤️', flower:'🌸', book:'📖' };
+      try {
+        const p = JSON.parse(localStorage.getItem('prefs') || '{}');
+        const icon = ICONS[p.ratingIcon] || '★';
+        if (icon !== '★') {
+          document.querySelectorAll('.rating-display').forEach(el => {
+            el.textContent = el.textContent!.replace(/★/g, icon);
+          });
+        }
+      } catch(e) {}
+
       // User dropdown
       const menu = document.getElementById('user-menu');
       const dropdown = document.getElementById('user-dropdown');

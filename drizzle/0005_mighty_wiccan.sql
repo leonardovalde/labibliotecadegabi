@@ -1,0 +1,1 @@
+ALTER TABLE "user_books" ADD COLUMN "cover_url" text;
