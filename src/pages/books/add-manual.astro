@@ -1,0 +1,117 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Agregar libro manualmente">
+  <div class="max-w-xl mx-auto">
+    <a href="/books/search" class="text-gray-500 hover:text-white text-sm mb-6 inline-block">← Volver a búsqueda</a>
+    <h2 class="text-2xl font-bold mb-6">Agregar libro manualmente</h2>
+
+    <form method="post" action="/api/books/add-manual" class="space-y-4">
+
+      <div>
+        <label class="text-xs text-gray-400 block mb-1">Título *</label>
+        <input name="title" required class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs text-gray-400 block mb-1">Autor</label>
+          <input name="authorName" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+        </div>
+        <div>
+          <label class="text-xs text-gray-400 block mb-1">Género del autor</label>
+          <select name="authorGender" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none">
+            <option value="unknown">Desconocido</option>
+            <option value="male">Hombre</option>
+            <option value="female">Mujer</option>
+            <option value="non_binary">No binario</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-400 block mb-1">Nacionalidad del autor</label>
+        <input name="authorNationality" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs text-gray-400 block mb-1">ISBN</label>
+          <input name="isbn" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+        </div>
+        <div>
+          <label class="text-xs text-gray-400 block mb-1">Año de publicación</label>
+          <input name="yearPublished" type="number" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs text-gray-400 block mb-1">Páginas</label>
+          <input name="pages" type="number" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+        </div>
+        <div>
+          <label class="text-xs text-gray-400 block mb-1">Idioma original</label>
+          <input name="originalLanguage" placeholder="ej: español, inglés" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-400 block mb-1">Géneros (separados por coma)</label>
+        <input name="genres" placeholder="ej: ficción, terror, romance" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-400 block mb-1">URL de portada</label>
+        <input id="cover-input" name="coverUrl" type="url" placeholder="https://..." class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+        <img id="cover-preview" class="mt-2 w-24 rounded-lg hidden" alt="Preview portada" />
+      </div>
+
+      <div class="flex items-center gap-3">
+        <input type="checkbox" id="isSaga" name="isSaga" value="true" class="rounded" />
+        <label for="isSaga" class="text-sm text-gray-300">Es parte de una saga</label>
+      </div>
+
+      <div id="saga-fields" class="grid grid-cols-2 gap-4 hidden">
+        <div>
+          <label class="text-xs text-gray-400 block mb-1">Nombre de la saga</label>
+          <input name="sagaName" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+        </div>
+        <div>
+          <label class="text-xs text-gray-400 block mb-1">Número en la saga</label>
+          <input name="sagaOrder" type="number" min="1" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-500" />
+        </div>
+      </div>
+
+      <button type="submit" class="w-full bg-white text-gray-950 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition-colors mt-2">
+        Agregar libro
+      </button>
+    </form>
+  </div>
+
+  <script>
+    // Toggle saga fields
+    document.getElementById('isSaga')?.addEventListener('change', (e) => {
+      const fields = document.getElementById('saga-fields')!;
+      fields.classList.toggle('hidden', !(e.target as HTMLInputElement).checked);
+    });
+
+    // Cover preview with debounce
+    const coverInput = document.getElementById('cover-input') as HTMLInputElement;
+    const coverPreview = document.getElementById('cover-preview') as HTMLImageElement;
+    let timer: ReturnType<typeof setTimeout>;
+    coverInput?.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const url = coverInput.value.trim();
+        if (url) {
+          coverPreview.src = url;
+          coverPreview.classList.remove('hidden');
+        } else {
+          coverPreview.classList.add('hidden');
+        }
+      }, 600);
+    });
+  </script>
+</Layout>

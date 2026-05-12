@@ -1,0 +1,254 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getBookWithDetails } from '../../db/queries';
+
+const { id } = Astro.params;
+const data = await getBookWithDetails(id!);
+
+if (!data) return Astro.redirect('/');
+
+const { book, authors, userBook, tags } = data;
+
+const STATUS_OPTIONS = [
+  { value: 'quiero_leer', label: 'Quiero leer' },
+  { value: 'leyendo', label: 'Leyendo' },
+  { value: 'leido', label: 'Leído' },
+  { value: 'pausado', label: 'Pausado' },
+  { value: 'abandonado', label: 'Abandonado' },
+];
+---
+
+<Layout title={book.title}>
+  <div class="max-w-4xl mx-auto">
+    <a href="/" class="text-stone-400 hover:text-stone-700 text-sm mb-6 inline-block">← Volver</a>
+
+    <form id="delete-form" method="post" action="/api/books/delete">
+      <input type="hidden" name="bookId" value={book.id} />
+    </form>
+
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- Portada -->
+      <div class="flex-shrink-0 flex flex-col gap-3">
+        {book.coverUrl ? (
+          <img id="cover-preview" src={book.coverUrl} alt={book.title} class="w-48 rounded-lg shadow-md" />
+        ) : (
+          <div id="cover-preview" class="w-48 h-72 bg-stone-100 rounded-lg flex items-center justify-center text-6xl border border-stone-200">📖</div>
+        )}
+        <button id="open-cover-modal" type="button" class="w-48 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs py-1.5 rounded-md border border-stone-200 transition-colors">
+          🖼️ Cambiar portada
+        </button>
+      </div>
+
+      <!-- Modal buscador de portadas -->
+      <div id="cover-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-lg p-6 space-y-4 shadow-xl">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold text-stone-800">Buscar portada</h3>
+            <button id="close-cover-modal" class="text-stone-400 hover:text-stone-700 text-xl leading-none">✕</button>
+          </div>
+
+          <div class="flex gap-2">
+            <input
+              id="cover-search-input"
+              type="text"
+              placeholder="Título o autor..."
+              value={book.title}
+              class="flex-1 bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800"
+            />
+            <button id="cover-search-btn" class="bg-stone-800 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-900 transition-colors">
+              Buscar
+            </button>
+          </div>
+
+          <div class="flex gap-4 text-xs text-stone-500">
+            <span>Fuente:</span>
+            <label class="flex items-center gap-1 cursor-pointer">
+              <input type="radio" name="cover-source" value="ol" checked /> Open Library
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer">
+              <input type="radio" name="cover-source" value="bing" /> Google Images
+            </label>
+          </div>
+
+          <div class="text-xs text-stone-400">O pega una URL directamente:</div>
+          <div class="flex gap-2">
+            <input
+              id="cover-url-input"
+              type="url"
+              placeholder="https://..."
+              class="flex-1 bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800"
+            />
+            <button id="cover-url-apply" class="bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 px-3 py-2 rounded-md text-sm transition-colors">
+              Aplicar
+            </button>
+          </div>
+
+          <div id="cover-results" class="grid grid-cols-4 gap-3 max-h-72 overflow-y-auto">
+            <p class="col-span-4 text-stone-400 text-sm text-center py-4">Busca para ver portadas disponibles</p>
+          </div>
+
+          <form id="cover-save-form" method="post" action="/api/books/cover">
+            <input type="hidden" name="bookId" value={book.id} />
+            <input type="hidden" id="cover-save-url" name="coverUrl" />
+            <button type="submit" id="cover-save-btn" class="w-full bg-stone-800 text-white py-2 rounded-md font-medium hover:bg-stone-900 transition-colors disabled:opacity-30" disabled>
+              Guardar portada
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="flex-1">
+        <div class="flex items-start justify-between gap-4">
+          <h1 class="text-3xl font-bold leading-tight text-stone-900">{book.title}</h1>
+          <button id="delete-btn" type="button" class="flex-shrink-0 text-xs text-stone-400 hover:text-red-500 border border-stone-200 hover:border-red-300 px-2.5 py-1 rounded-md transition-colors mt-1" title="Eliminar libro">
+            Eliminar
+          </button>
+        </div>
+
+        {authors.length > 0 && (
+          <p class="text-stone-500 mt-2 text-lg">{authors.map((a) => a.name).join(', ')}</p>
+        )}
+
+        <div class="flex flex-wrap gap-3 mt-4 text-sm text-stone-400">
+          {book.yearPublished && <span>📅 {book.yearPublished}</span>}
+          {book.pages && <span>📄 {book.pages} páginas</span>}
+          {book.originalLanguage && <span>🌐 {book.originalLanguage}</span>}
+          {book.isSaga && book.sagaName && (
+            <span class="text-stone-600">📚 {book.sagaName}{book.sagaOrder ? ` #${book.sagaOrder}` : ''}</span>
+          )}
+        </div>
+
+        {book.genres && book.genres.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-4">
+            {book.genres.slice(0, 6).map((g) => (
+              <span class="bg-stone-100 text-stone-600 text-xs px-2 py-1 rounded-md border border-stone-200">{g}</span>
+            ))}
+          </div>
+        )}
+
+        {tags.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-3">
+            {tags.map((t) => (
+              <span class="bg-stone-100 text-stone-500 text-xs px-2 py-1 rounded-md border border-stone-200">#{t.name}</span>
+            ))}
+          </div>
+        )}
+
+        <!-- Formulario de estado -->
+        <form method="post" action="/api/books/update" class="mt-6 bg-white border border-stone-200 rounded-xl p-5 space-y-4 shadow-sm">
+          <input type="hidden" name="bookId" value={book.id} />
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs text-stone-500 block mb-1">Estado</label>
+              <select name="status" class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none text-stone-800">
+                {STATUS_OPTIONS.map((opt) => (
+                  <option value={opt.value} selected={userBook?.status === opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-stone-500 block mb-1">Calificación</label>
+              <select name="rating" class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none text-stone-800">
+                <option value="">Sin calificar</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option value={n} selected={userBook?.rating === n}>{'★'.repeat(n)} ({n})</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs text-stone-500 block mb-1">Fecha de lectura</label>
+            <input type="date" name="readAt" value={userBook?.readAt ?? ''} class="bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none w-full text-stone-800" />
+          </div>
+
+          <div>
+            <label class="text-xs text-stone-500 block mb-1">Notas personales</label>
+            <textarea name="notes" rows={3} class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none resize-none text-stone-800 placeholder-stone-300" placeholder="Tu reseña o notas...">{userBook?.notes ?? ''}</textarea>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="wishlist" name="wishlist" value="true" checked={userBook?.wishlist ?? false} class="rounded" />
+            <label for="wishlist" class="text-sm text-stone-600">En lista de deseos</label>
+          </div>
+
+          <button type="submit" class="w-full bg-stone-800 text-white py-2 rounded-md font-medium hover:bg-stone-900 transition-colors">
+            Guardar cambios
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('delete-btn')?.addEventListener('click', () => {
+      if (confirm('¿Eliminar este libro de tu biblioteca?')) {
+        (document.getElementById('delete-form') as HTMLFormElement).submit();
+      }
+    });
+
+    const modal = document.getElementById('cover-modal')!;
+    const preview = document.getElementById('cover-preview') as HTMLImageElement;
+    const saveUrl = document.getElementById('cover-save-url') as HTMLInputElement;
+    const saveBtn = document.getElementById('cover-save-btn') as HTMLButtonElement;
+    const results = document.getElementById('cover-results')!;
+
+    document.getElementById('open-cover-modal')?.addEventListener('click', () => modal.classList.remove('hidden'));
+    document.getElementById('close-cover-modal')?.addEventListener('click', () => modal.classList.add('hidden'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
+
+    function selectCover(url: string) {
+      if (preview.tagName === 'IMG') preview.src = url;
+      saveUrl.value = url;
+      saveBtn.disabled = false;
+      document.querySelectorAll('.cover-option').forEach((el) => el.classList.remove('ring-2', 'ring-stone-800'));
+      document.querySelector(`[data-url="${url}"]`)?.classList.add('ring-2', 'ring-stone-800');
+    }
+
+    async function searchCovers(q: string) {
+      const source = (document.querySelector('input[name="cover-source"]:checked') as HTMLInputElement)?.value ?? 'ol';
+      results.innerHTML = '<p class="col-span-4 text-stone-400 text-sm text-center py-4">Buscando...</p>';
+      const res = await fetch(`/api/covers/search?q=${encodeURIComponent(q)}&source=${source}`);
+      const data = await res.json();
+      if (data.error) {
+        results.innerHTML = `<p class="col-span-4 text-red-500 text-sm text-center py-4">${data.error}</p>`;
+        return;
+      }
+      const covers: { url: string; label: string }[] = data;
+      if (!covers.length) { results.innerHTML = '<p class="col-span-4 text-stone-400 text-sm text-center py-4">Sin resultados</p>'; return; }
+
+      const valid: typeof covers = [];
+      await Promise.all(covers.map((c) => new Promise<void>((resolve) => {
+        const img = new Image();
+        img.onload = () => { if (img.naturalWidth > 50 && img.naturalHeight > 50) valid.push(c); resolve(); };
+        img.onerror = () => resolve();
+        img.src = c.url;
+      })));
+
+      if (!valid.length) { results.innerHTML = '<p class="col-span-4 text-stone-400 text-sm text-center py-4">Sin portadas disponibles</p>'; return; }
+
+      results.innerHTML = valid.map((c) => `
+        <button type="button" data-url="${c.url}" class="cover-option rounded-md overflow-hidden aspect-[2/3] bg-stone-100 hover:opacity-80 transition-opacity border border-stone-200">
+          <img src="${c.url}" alt="${c.label}" class="w-full h-full object-cover" />
+        </button>`).join('');
+
+      results.querySelectorAll('.cover-option').forEach((btn) => {
+        btn.addEventListener('click', () => selectCover((btn as HTMLElement).dataset.url!));
+      });
+    }
+
+    document.getElementById('cover-search-btn')?.addEventListener('click', () => {
+      const q = (document.getElementById('cover-search-input') as HTMLInputElement).value.trim();
+      if (q) searchCovers(q);
+    });
+    document.getElementById('cover-search-input')?.addEventListener('keydown', (e) => {
+      if ((e as KeyboardEvent).key === 'Enter') { const q = (e.target as HTMLInputElement).value.trim(); if (q) searchCovers(q); }
+    });
+    document.getElementById('cover-url-apply')?.addEventListener('click', () => {
+      const url = (document.getElementById('cover-url-input') as HTMLInputElement).value.trim();
+      if (url) selectCover(url);
+    });
+  </script>
+</Layout>

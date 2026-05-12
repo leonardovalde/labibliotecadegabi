@@ -1,0 +1,115 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getStats } from '../db/queries';
+
+const user = Astro.locals.user;
+if (!user) return Astro.redirect('/login');
+const stats = await getStats(user.id);
+
+const STATUS_LABELS: Record<string, string> = {
+  quiero_leer: 'Quiero leer',
+  leyendo: 'Leyendo',
+  leido: 'Leído',
+  abandonado: 'Abandonado',
+  pausado: 'Pausado',
+};
+
+const GENDER_LABELS: Record<string, string> = {
+  male: 'Hombres',
+  female: 'Mujeres',
+  non_binary: 'No binario',
+  unknown: 'Desconocido',
+};
+
+const totalBooks = stats.byStatus.reduce((acc, s) => acc + s.count, 0);
+const readCount = stats.byStatus.find((s) => s.status === 'leido')?.count ?? 0;
+---
+
+<Layout title="Estadísticas">
+  <h2 class="text-2xl font-bold mb-8 text-stone-800">Estadísticas</h2>
+
+  <!-- Resumen -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+    <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+      <p class="text-3xl font-bold text-stone-800">{totalBooks}</p>
+      <p class="text-stone-400 text-sm mt-1">Libros en biblioteca</p>
+    </div>
+    <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+      <p class="text-3xl font-bold text-green-600">{readCount}</p>
+      <p class="text-stone-400 text-sm mt-1">Libros leídos</p>
+    </div>
+    <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+      <p class="text-3xl font-bold text-blue-600">{stats.totalPages.toLocaleString()}</p>
+      <p class="text-stone-400 text-sm mt-1">Páginas leídas</p>
+    </div>
+    <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+      <p class="text-3xl font-bold text-purple-600">{stats.byNationality.length}</p>
+      <p class="text-stone-400 text-sm mt-1">Nacionalidades de autores</p>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-8">
+    <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+      <h3 class="font-semibold mb-4 text-stone-800">Por estado de lectura</h3>
+      <div class="space-y-3">
+        {stats.byStatus.map((s) => (
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-stone-600">{STATUS_LABELS[s.status ?? ''] ?? s.status}</span>
+            <div class="flex items-center gap-3">
+              <div class="w-32 bg-stone-100 rounded-md h-2">
+                <div class="bg-stone-700 h-2 rounded-md" style={`width: ${totalBooks > 0 ? (s.count / totalBooks) * 100 : 0}%`} />
+              </div>
+              <span class="text-sm font-medium w-6 text-right text-stone-700">{s.count}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+      <h3 class="font-semibold mb-4 text-stone-800">Diversidad de autores</h3>
+      <div class="space-y-3">
+        {stats.byGender.map((g) => {
+          const total = stats.byGender.reduce((acc, x) => acc + x.count, 0);
+          return (
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-stone-600">{GENDER_LABELS[g.gender ?? 'unknown'] ?? g.gender}</span>
+              <div class="flex items-center gap-3">
+                <div class="w-32 bg-stone-100 rounded-md h-2">
+                  <div class="bg-purple-400 h-2 rounded-md" style={`width: ${total > 0 ? (g.count / total) * 100 : 0}%`} />
+                </div>
+                <span class="text-sm font-medium w-6 text-right text-stone-700">{g.count}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+
+    <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+      <h3 class="font-semibold mb-4 text-stone-800">Autores por nacionalidad</h3>
+      <div class="space-y-2">
+        {stats.byNationality.filter((n) => n.nationality).map((n) => (
+          <div class="flex justify-between text-sm">
+            <span class="text-stone-600">{n.nationality}</span>
+            <span class="font-medium text-stone-800">{n.count}</span>
+          </div>
+        ))}
+        {stats.byNationality.length === 0 && <p class="text-stone-400 text-sm">Sin datos aún</p>}
+      </div>
+    </div>
+
+    <div class="bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+      <h3 class="font-semibold mb-4 text-stone-800">Libros leídos por mes</h3>
+      <div class="space-y-2">
+        {stats.byMonth.map((m) => (
+          <div class="flex justify-between text-sm">
+            <span class="text-stone-600">{m.month}</span>
+            <span class="font-medium text-stone-800">{m.count}</span>
+          </div>
+        ))}
+        {stats.byMonth.length === 0 && <p class="text-stone-400 text-sm">Sin datos aún</p>}
+      </div>
+    </div>
+  </div>
+</Layout>

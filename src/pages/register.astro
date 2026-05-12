@@ -1,0 +1,39 @@
+---
+import '../styles/global.css';
+if (Astro.cookies.get('session')?.value) return Astro.redirect('/');
+const error = Astro.url.searchParams.get('error');
+---
+<html lang="es">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width" />
+  <title>Registro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+</head>
+<body class="min-h-screen flex items-center justify-center relative overflow-hidden">
+  <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg'); filter: blur(3px) brightness(0.35); transform: scale(1.05);"></div>
+  <div class="relative z-10 bg-white/90 backdrop-blur-sm border border-stone-200 rounded-xl p-8 w-full max-w-sm shadow-xl">
+    <h1 class="text-2xl text-center text-stone-800 mb-6" style="font-family:'Playfair Display',serif;font-style:italic;font-weight:700">
+      La Biblioteca de Gabi
+    </h1>
+    {error && <p class="text-red-500 text-sm mb-4 text-center">{error}</p>}
+    <form method="post" action="/api/auth/register" class="space-y-4">
+      <div>
+        <label class="text-xs text-stone-500 block mb-1">Usuario</label>
+        <input name="username" required class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800" />
+      </div>
+      <div>
+        <label class="text-xs text-stone-500 block mb-1">Nombre a mostrar</label>
+        <input name="displayName" class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800" />
+      </div>
+      <div>
+        <label class="text-xs text-stone-500 block mb-1">Contraseña</label>
+        <input name="password" type="password" required class="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-800" />
+      </div>
+      <button class="w-full bg-stone-800 text-white py-2 rounded-md font-medium hover:bg-stone-900 transition-colors">Crear cuenta</button>
+    </form>
+    <p class="text-center text-sm text-stone-400 mt-4">¿Ya tienes cuenta? <a href="/login" class="text-stone-700 underline">Inicia sesión</a></p>
+  </div>
+</div>
+</body>
+</html>

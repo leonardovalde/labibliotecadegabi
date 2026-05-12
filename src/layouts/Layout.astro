@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+import { getSessionUser } from '../lib/auth';
+
+const user = await getSessionUser(Astro.cookies.get('session')?.value);
+const { title = 'La Biblioteca de Gabi' } = Astro.props;
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title} — La Biblioteca de Gabi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-stone-50 text-gray-900 min-h-screen">
+    <header class="bg-white border-b border-stone-200 relative">
+
+      <!-- Avatar top-right -->
+      {user && (
+        <div class="absolute top-3 right-6 z-50" id="user-menu">
+          <button class="flex items-center gap-2 text-sm text-stone-600 hover:text-stone-900 transition-colors">
+            {user.avatarUrl
+              ? <img src={user.avatarUrl} class="w-8 h-8 rounded-md object-cover" alt={user.username} />
+              : <div class="w-8 h-8 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center text-sm font-bold text-stone-500">{user.username[0].toUpperCase()}</div>
+            }
+            <span class="font-medium">{user.displayName ?? user.username}</span>
+            <span class="text-stone-300 text-xs">▾</span>
+          </button>
+          <div id="user-dropdown" class="absolute right-0 top-full mt-1 w-40 bg-white border border-stone-200 rounded-lg shadow-md hidden">
+            <a href={`/u/${user.username}`} class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 rounded-t-lg">Ver perfil</a>
+            <a href="/settings" class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50">Configuración</a>
+            <form method="post" action="/api/auth/logout">
+              <button class="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-stone-50 rounded-b-lg">Cerrar sesión</button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <div class="max-w-7xl mx-auto px-6 pt-5 pb-0 flex flex-col items-center gap-3">
+        <a href="/" class="text-stone-800" style="font-family: 'Playfair Display', serif; font-size: 2.2rem; font-style: italic; font-weight: 700; letter-spacing: -0.01em;">
+          La Biblioteca de Gabi
+        </a>
+        <nav class="flex items-center gap-6 text-sm text-gray-500 border-t border-stone-100 w-full pt-3 justify-center pb-3">
+          <a href="/" class="hover:text-gray-900 transition-colors">Biblioteca</a>
+          <a href="/wishlist" class="hover:text-gray-900 transition-colors">Lista de deseos</a>
+          <a href="/stats" class="hover:text-gray-900 transition-colors">Estadísticas</a>
+          <a href="/explore" class="hover:text-gray-900 transition-colors">Explorar</a>
+          <a href="/books/search" class="bg-stone-800 text-white px-4 py-1.5 rounded-md font-medium hover:bg-stone-900 transition-colors">+ Agregar libro</a>
+        </nav>
+      </div>
+    </header>
+    <main class="max-w-7xl mx-auto px-6 py-8">
+      <slot />
+    </main>
+    <script>
+      const menu = document.getElementById('user-menu');
+      const dropdown = document.getElementById('user-dropdown');
+      if (menu && dropdown) {
+        let hideTimer: ReturnType<typeof setTimeout>;
+        const show = () => { clearTimeout(hideTimer); dropdown.classList.remove('hidden'); };
+        const hide = () => { hideTimer = setTimeout(() => dropdown.classList.add('hidden'), 300); };
+        menu.addEventListener('mouseenter', show);
+        menu.addEventListener('mouseleave', hide);
+        dropdown.addEventListener('mouseenter', show);
+        dropdown.addEventListener('mouseleave', hide);
+      }
+    </script>
+  </body>
+</html>

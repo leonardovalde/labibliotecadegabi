@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLibrary } from '../db/queries';
+
+const user = Astro.locals.user;
+if (!user) return Astro.redirect('/login');
+
+const url = Astro.url;
+const status = url.searchParams.get('status') ?? '';
+const search = url.searchParams.get('search') ?? '';
+
+const entries = await getLibrary({ status: status || undefined, search: search || undefined, userId: user.id });
+
+const STATUS_LABELS: Record<string, string> = {
+  quiero_leer: 'Quiero leer',
+  leyendo: 'Leyendo',
+  leido: 'Leído',
+  abandonado: 'Abandonado',
+  pausado: 'Pausado',
+};
+---
+
+<Layout title="Biblioteca">
+  <!-- Filtros -->
+  <div class="flex flex-wrap gap-3 mb-8 items-center justify-between">
+    <div class="flex gap-2 flex-wrap items-center">
+      {['', 'quiero_leer', 'leyendo', 'leido', 'pausado', 'abandonado'].map((s) => (
+        <a
+          href={`/?status=${s}&search=${search}`}
+          class={`px-3 py-1.5 rounded-md text-sm transition-colors ${
+            status === s
+              ? 'bg-stone-800 text-white font-medium'
+              : 'bg-white border border-stone-200 text-gray-600 hover:border-stone-300 hover:text-gray-900'
+          }`}
+        >
+          {s === '' ? 'Todos' : STATUS_LABELS[s]}
+        </a>
+      ))}
+    </div>
+    <form method="get" class="flex gap-2 items-center">
+      <input type="hidden" name="status" value={status} />
+      <input
+        name="search"
+        value={search}
+        placeholder="Buscar en mi biblioteca..."
+        class="bg-white border border-stone-200 rounded-lg px-3 py-1.5 text-sm w-56 focus:outline-none focus:border-stone-300 text-gray-900 placeholder-gray-400"
+      />
+      <button class="bg-stone-800 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-stone-900 transition-colors">Buscar</button>
+    </form>
+  </div>
+
+  <!-- Grid de libros -->
+  {entries.length === 0 ? (
+    <div class="text-center py-24 text-gray-400">
+      <p class="text-5xl mb-4">📭</p>
+      <p class="text-lg">No hay libros aquí todavía.</p>
+      <a href="/books/search" class="mt-4 inline-block text-stone-800 underline">Agregar un libro</a>
+    </div>
+  ) : (
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
+      {entries.map(({ book, userBook }) => (
+        <a href={`/books/${book.id}`} class="group flex flex-col gap-2">
+          <div class="relative aspect-[2/3] rounded-lg overflow-hidden bg-stone-100 shadow-sm">
+            {book.coverUrl ? (
+              <img
+                src={book.coverUrl}
+                alt={book.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            ) : (
+              <div class="w-full h-full flex items-center justify-center text-stone-300 text-4xl">📖</div>
+            )}
+            {userBook?.rating && (
+              <div class="absolute bottom-2 right-2 bg-black/60 text-yellow-400 text-xs px-1.5 py-0.5 rounded">
+                {'★'.repeat(userBook.rating)}
+              </div>
+            )}
+            <div class={`absolute top-2 left-2 text-xs px-1.5 py-0.5 rounded font-medium text-white ${
+              userBook?.status === 'leyendo' ? 'bg-blue-500' :
+              userBook?.status === 'leido' ? 'bg-green-600' :
+              userBook?.status === 'abandonado' ? 'bg-red-600' :
+              userBook?.status === 'pausado' ? 'bg-yellow-500' :
+              'bg-gray-400'
+            }`}>
+              {STATUS_LABELS[userBook?.status ?? 'quiero_leer']}
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-medium leading-tight line-clamp-2 text-gray-800 group-hover:text-stone-900">{book.title}</p>
+            {book.isSaga && book.sagaName && (
+              <p class="text-xs text-gray-400 mt-0.5">{book.sagaName} #{book.sagaOrder}</p>
+            )}
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+</Layout>

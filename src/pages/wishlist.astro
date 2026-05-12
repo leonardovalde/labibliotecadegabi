@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLibrary } from '../db/queries';
+
+const user = Astro.locals.user;
+if (!user) return Astro.redirect('/login');
+const entries = await getLibrary({ wishlist: true, userId: user.id });
+---
+
+<Layout title="Lista de deseos">
+  <h2 class="text-2xl font-bold mb-6">Lista de deseos</h2>
+
+  {entries.length === 0 ? (
+    <div class="text-center py-24 text-gray-500">
+      <p class="text-5xl mb-4">🌟</p>
+      <p>Tu lista de deseos está vacía.</p>
+      <a href="/books/search" class="mt-4 inline-block text-white underline">Buscar libros</a>
+    </div>
+  ) : (
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
+      {entries.map(({ book }) => (
+        <a href={`/books/${book.id}`} class="group flex flex-col gap-2">
+          <div class="aspect-[2/3] rounded-lg overflow-hidden bg-gray-800">
+            {book.coverUrl ? (
+              <img src={book.coverUrl} alt={book.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            ) : (
+              <div class="w-full h-full flex items-center justify-center text-4xl text-gray-600">📖</div>
+            )}
+          </div>
+          <p class="text-sm font-medium leading-tight line-clamp-2">{book.title}</p>
+        </a>
+      ))}
+    </div>
+  )}
+</Layout>
