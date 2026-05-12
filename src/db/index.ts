@@ -4,6 +4,7 @@ import postgres from 'postgres';
 import * as schema from './schema';
 
 const client = postgres(process.env.DATABASE_URL!, {
-  prepare: false, // required for NeonDB pooler
+  prepare: false,
+  connection: { search_path: 'public' },
 });
 export const db = drizzle(client, { schema });
