@@ -1,6 +1,7 @@
 import { pgTable, uuid, varchar, text, integer, boolean, smallint, date, timestamp, pgEnum } from 'drizzle-orm/pg-core';
 
 export const readingStatusEnum = pgEnum('reading_status', ['quiero_leer', 'leyendo', 'leido', 'abandonado', 'pausado', 'releyendo', 'releido']);
+export const bookFormatEnum = pgEnum('book_format', ['fisico', 'digital', 'audiolibro']);
 export const authorGenderEnum = pgEnum('author_gender', ['male', 'female', 'non_binary', 'unknown']);
 
 export const users = pgTable('users', {
@@ -61,6 +62,7 @@ export const userBooks = pgTable('user_books', {
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   bookId: uuid('book_id').notNull().references(() => books.id, { onDelete: 'cascade' }),
   status: readingStatusEnum('status').default('quiero_leer'),
+  format: bookFormatEnum('format').default('fisico'),
   wishlist: boolean('wishlist').default(false),
   rating: smallint('rating'),
   readAt: date('read_at'),

@@ -97,7 +97,8 @@ export async function addBookToLibrary(bookId: string, userId: string) {
 }
 
 export async function updateUserBook(bookId: string, userId: string, data: Partial<{
-  status: 'quiero_leer' | 'leyendo' | 'leido' | 'abandonado' | 'pausado';
+  status: 'quiero_leer' | 'leyendo' | 'leido' | 'abandonado' | 'pausado' | 'releyendo' | 'releido';
+  format: 'fisico' | 'digital' | 'audiolibro';
   wishlist: boolean;
   rating: number;
   readAt: string;

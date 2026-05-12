@@ -29,6 +29,13 @@
       "when": 1778548184700,
       "tag": "0003_jittery_sentinels",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1778549283456,
+      "tag": "0004_magical_kang",
+      "breakpoints": true
     }
   ]
 }
