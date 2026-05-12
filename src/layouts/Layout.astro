@@ -15,61 +15,107 @@ const { title = 'La Biblioteca de Gabi' } = Astro.props;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+    <!-- Apply theme before paint to avoid flash -->
+    <script is:inline>
+      const t = localStorage.getItem('theme') || 'clasica';
+      document.documentElement.setAttribute('data-theme', t);
+    </script>
   </head>
-  <body class="bg-stone-50 text-gray-900 min-h-screen">
-    <header class="bg-white border-b border-stone-200">
+  <body class="min-h-screen" style="background:var(--bg);color:var(--text)">
+    <header style="background:var(--nav-bg);border-bottom:1px solid var(--border)">
       <div class="max-w-7xl mx-auto px-4 sm:px-6">
-
-        <!-- Top row: título centrado + avatar derecha -->
         <div class="flex items-center justify-between py-4">
-          <!-- Hamburger (mobile) -->
-          <button id="menu-toggle" class="sm:hidden text-stone-500 hover:text-stone-800 p-1">
+
+          <button id="menu-toggle" class="sm:hidden p-1" style="color:var(--text-muted)">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
           </button>
 
-          <!-- Título -->
-          <a href="/" class="text-stone-800 flex-1 text-center sm:text-left" style="font-family:'Playfair Display',serif;font-size:clamp(1.3rem,4vw,2.2rem);font-style:italic;font-weight:700;letter-spacing:-0.01em;">
+          <a href="/" class="flex-1 text-center sm:text-left" style="font-family:'Playfair Display',serif;font-size:clamp(1.3rem,4vw,2.2rem);font-style:italic;font-weight:700;letter-spacing:-0.01em;color:var(--text)">
             La Biblioteca de Gabi
           </a>
 
-          <!-- Avatar -->
-          {user && (
-            <div class="relative z-50 flex-shrink-0" id="user-menu">
-              <button class="flex items-center gap-1.5 text-sm text-stone-600 hover:text-stone-900 transition-colors">
-                {user.avatarUrl
-                  ? <img src={user.avatarUrl} class="w-8 h-8 rounded-md object-cover" alt={user.username} />
-                  : <div class="w-8 h-8 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center text-sm font-bold text-stone-500">{user.username[0].toUpperCase()}</div>
-                }
-                <span class="hidden sm:inline font-medium">{user.displayName ?? user.username}</span>
-                <span class="hidden sm:inline text-stone-300 text-xs">▾</span>
-              </button>
-              <div id="user-dropdown" class="absolute right-0 top-full mt-1 w-44 bg-white border border-stone-200 rounded-lg shadow-md hidden">
-                <a href={`/u/${user.username}`} class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 rounded-t-lg">Ver perfil</a>
-                <a href="/settings" class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50">Configuración</a>
-                <form method="post" action="/api/auth/logout">
-                  <button class="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-stone-50 rounded-b-lg">Cerrar sesión</button>
-                </form>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <!-- Theme picker -->
+            <div class="relative" id="theme-menu">
+              <button id="theme-btn" class="p-1.5 rounded-md text-lg" title="Cambiar tema">🎨</button>
+              <div id="theme-dropdown" class="hidden absolute right-0 top-full mt-1 p-2 rounded-lg shadow-lg z-50 w-36" style="background:var(--bg-card);border:1px solid var(--border)">
+                {[
+                  { id: 'clasica',  label: '☀️ Clásica' },
+                  { id: 'nocturna', label: '🌙 Nocturna' },
+                  { id: 'bosque',   label: '🌿 Bosque' },
+                  { id: 'cielo',    label: '🌊 Cielo' },
+                  { id: 'rosa',     label: '🌸 Rosa' },
+                  { id: 'sepia',    label: '📜 Sepia' },
+                ].map(t => (
+                  <button data-theme={t.id} class="theme-opt w-full text-left px-3 py-1.5 text-sm rounded-md hover:opacity-70 transition-opacity" style="color:var(--text)">
+                    {t.label}
+                  </button>
+                ))}
               </div>
             </div>
-          )}
+
+            {user && (
+              <div class="relative z-50" id="user-menu">
+                <button class="flex items-center gap-1.5 text-sm transition-colors" style="color:var(--text-muted)">
+                  {user.avatarUrl
+                    ? <img src={user.avatarUrl} class="w-8 h-8 rounded-md object-cover" alt={user.username} />
+                    : <div class="w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold" style="background:var(--border);color:var(--text-muted)">{user.username[0].toUpperCase()}</div>
+                  }
+                  <span class="hidden sm:inline font-medium">{user.displayName ?? user.username}</span>
+                  <span class="hidden sm:inline text-xs opacity-40">▾</span>
+                </button>
+                <div id="user-dropdown" class="hidden absolute right-0 top-full mt-1 w-44 rounded-lg shadow-md z-50" style="background:var(--bg-card);border:1px solid var(--border)">
+                  <a href={`/u/${user.username}`} class="block px-4 py-2.5 text-sm rounded-t-lg hover:opacity-70" style="color:var(--text)">Ver perfil</a>
+                  <a href="/settings" class="block px-4 py-2.5 text-sm hover:opacity-70" style="color:var(--text)">Configuración</a>
+                  <form method="post" action="/api/auth/logout">
+                    <button class="w-full text-left px-4 py-2.5 text-sm rounded-b-lg hover:opacity-70" style="color:#ef4444">Cerrar sesión</button>
+                  </form>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
-        <!-- Nav -->
-        <nav id="main-nav" class="hidden sm:flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500 border-t border-stone-100 py-3 justify-center">
-          <a href="/" class="hover:text-gray-900 transition-colors">Biblioteca</a>
-          <a href="/wishlist" class="hover:text-gray-900 transition-colors">Lista de deseos</a>
-          <a href="/stats" class="hover:text-gray-900 transition-colors">Estadísticas</a>
-          <a href="/explore" class="hover:text-gray-900 transition-colors">Explorar</a>
-          <a href="/books/search" class="bg-stone-800 text-white px-4 py-1.5 rounded-md font-medium hover:bg-stone-900 transition-colors">+ Agregar libro</a>
+        <nav id="main-nav" class="hidden sm:flex flex-wrap items-center gap-4 sm:gap-6 text-sm py-3 justify-center" style="border-top:1px solid var(--border);color:var(--text-muted)">
+          <a href="/" class="hover:opacity-100 opacity-70 transition-opacity">Biblioteca</a>
+          <a href="/wishlist" class="hover:opacity-100 opacity-70 transition-opacity">Lista de deseos</a>
+          <a href="/stats" class="hover:opacity-100 opacity-70 transition-opacity">Estadísticas</a>
+          <a href="/explore" class="hover:opacity-100 opacity-70 transition-opacity">Explorar</a>
+          <a href="/books/search" class="px-4 py-1.5 rounded-md font-medium opacity-100 hover:opacity-90 transition-opacity" style="background:var(--accent);color:var(--accent-text)">+ Agregar libro</a>
         </nav>
       </div>
     </header>
+
     <main class="max-w-7xl mx-auto px-6 py-8">
       <slot />
     </main>
+
     <script>
+      // Apply saved theme
+      const applyTheme = (t: string) => {
+        document.documentElement.setAttribute('data-theme', t);
+        localStorage.setItem('theme', t);
+      };
+
+      // Theme picker
+      const themeBtn = document.getElementById('theme-btn');
+      const themeDropdown = document.getElementById('theme-dropdown');
+      const themeMenu = document.getElementById('theme-menu');
+      let themeTimer: ReturnType<typeof setTimeout>;
+
+      themeMenu?.addEventListener('mouseenter', () => { clearTimeout(themeTimer); themeDropdown?.classList.remove('hidden'); });
+      themeMenu?.addEventListener('mouseleave', () => { themeTimer = setTimeout(() => themeDropdown?.classList.add('hidden'), 300); });
+      themeBtn?.addEventListener('click', () => themeDropdown?.classList.toggle('hidden'));
+
+      document.querySelectorAll('.theme-opt').forEach(btn => {
+        btn.addEventListener('click', () => {
+          applyTheme((btn as HTMLElement).dataset.theme!);
+          themeDropdown?.classList.add('hidden');
+        });
+      });
+
       // User dropdown
       const menu = document.getElementById('user-menu');
       const dropdown = document.getElementById('user-dropdown');
@@ -81,7 +127,6 @@ const { title = 'La Biblioteca de Gabi' } = Astro.props;
         menu.addEventListener('mouseleave', hide);
         dropdown.addEventListener('mouseenter', show);
         dropdown.addEventListener('mouseleave', hide);
-        // tap on mobile
         menu.querySelector('button')?.addEventListener('click', () => dropdown.classList.toggle('hidden'));
       }
 

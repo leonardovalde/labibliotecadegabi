@@ -1,1 +1,69 @@
 @import "tailwindcss";
+
+:root {
+  --bg: #fafaf9;
+  --bg-card: #ffffff;
+  --border: #e7e5e4;
+  --text: #1c1917;
+  --text-muted: #78716c;
+  --accent: #292524;
+  --accent-text: #ffffff;
+  --nav-bg: #ffffff;
+}
+
+[data-theme="nocturna"] {
+  --bg: #0f0f0f;
+  --bg-card: #1a1a1a;
+  --border: #2e2e2e;
+  --text: #e8e8e8;
+  --text-muted: #888;
+  --accent: #e8e8e8;
+  --accent-text: #0f0f0f;
+  --nav-bg: #141414;
+}
+
+[data-theme="bosque"] {
+  --bg: #f2f4f0;
+  --bg-card: #ffffff;
+  --border: #c8d5c0;
+  --text: #1e2b1a;
+  --text-muted: #5a7052;
+  --accent: #2d4a25;
+  --accent-text: #ffffff;
+  --nav-bg: #ffffff;
+}
+
+[data-theme="cielo"] {
+  --bg: #f0f4f8;
+  --bg-card: #ffffff;
+  --border: #bdd0e8;
+  --text: #1a2a3a;
+  --text-muted: #5a7a9a;
+  --accent: #1e4a7a;
+  --accent-text: #ffffff;
+  --nav-bg: #ffffff;
+}
+
+[data-theme="rosa"] {
+  --bg: #fdf4f5;
+  --bg-card: #ffffff;
+  --border: #f0c8cc;
+  --text: #3a1a1e;
+  --text-muted: #a06070;
+  --accent: #8b3a4a;
+  --accent-text: #ffffff;
+  --nav-bg: #ffffff;
+}
+
+[data-theme="sepia"] {
+  --bg: #f5efe6;
+  --bg-card: #fdf8f0;
+  --border: #d4b896;
+  --text: #2c1a0a;
+  --text-muted: #8a6a4a;
+  --accent: #5c3a1a;
+  --accent-text: #fdf8f0;
+  --nav-bg: #fdf8f0;
+}
+
+body { background-color: var(--bg); color: var(--text); }
