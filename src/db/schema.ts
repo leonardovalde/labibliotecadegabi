@@ -1,6 +1,6 @@
 import { pgTable, uuid, varchar, text, integer, boolean, smallint, date, timestamp, pgEnum } from 'drizzle-orm/pg-core';
 
-export const readingStatusEnum = pgEnum('reading_status', ['quiero_leer', 'leyendo', 'leido', 'abandonado', 'pausado', 'releyendo', 'releido']);
+export const readingStatusEnum = pgEnum('reading_status', ['quiero_leer', 'pendiente', 'leyendo', 'leido', 'abandonado', 'pausado', 'releyendo', 'releido']);
 export const bookFormatEnum = pgEnum('book_format', ['fisico', 'digital', 'audiolibro']);
 export const authorGenderEnum = pgEnum('author_gender', ['male', 'female', 'non_binary', 'unknown']);
 

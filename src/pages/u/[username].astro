@@ -67,6 +67,7 @@ const entries = await getLibrary({ userId: user.id });
               {userBook?.status && (
                 <div class={`absolute top-1.5 left-1.5 text-white text-xs px-1.5 py-0.5 rounded font-medium ${
                   userBook.status === 'leyendo' ? 'bg-blue-500' :
+                  userBook.status === 'pendiente' ? 'bg-orange-400' :
                   userBook.status === 'releyendo' ? 'bg-indigo-500' :
                   userBook.status === 'leido' ? 'bg-green-600' :
                   userBook.status === 'releido' ? 'bg-emerald-700' :

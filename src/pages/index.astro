@@ -13,6 +13,7 @@ const entries = await getLibrary({ status: status || undefined, search: search |
 
 const STATUS_LABELS: Record<string, string> = {
   quiero_leer: 'Quiero leer',
+  pendiente: 'Pendiente',
   leyendo: 'Leyendo',
   leido: 'Leído',
   releyendo: 'Releyendo',
@@ -26,7 +27,7 @@ const STATUS_LABELS: Record<string, string> = {
   <!-- Filtros -->
   <div class="flex flex-wrap gap-3 mb-8 items-center justify-between">
     <div class="flex gap-2 flex-wrap items-center">
-      {['', 'quiero_leer', 'leyendo', 'releyendo', 'leido', 'releido', 'pausado', 'abandonado'].map((s) => (
+      {['', 'quiero_leer', 'pendiente', 'leyendo', 'releyendo', 'leido', 'releido', 'pausado', 'abandonado'].map((s) => (
         <a
           href={`/?status=${s}&search=${search}`}
           class={`px-3 py-1.5 rounded-md text-sm transition-colors ${
@@ -79,6 +80,7 @@ const STATUS_LABELS: Record<string, string> = {
             )}
             <div class={`absolute top-2 left-2 text-xs px-1.5 py-0.5 rounded font-medium text-white ${
               userBook?.status === 'leyendo' ? 'bg-blue-500' :
+              userBook?.status === 'pendiente' ? 'bg-orange-400' :
               userBook?.status === 'releyendo' ? 'bg-indigo-500' :
               userBook?.status === 'leido' ? 'bg-green-600' :
               userBook?.status === 'releido' ? 'bg-emerald-700' :
