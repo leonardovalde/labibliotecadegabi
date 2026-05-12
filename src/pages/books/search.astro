@@ -78,11 +78,20 @@ const results = query ? await searchBooks(query) : [];
   <script>
     const input = document.getElementById('search-input') as HTMLInputElement;
     let timer: ReturnType<typeof setTimeout>;
+
+    // Move cursor to end on load
+    if (input?.value) {
+      const len = input.value.length;
+      input.setSelectionRange(len, len);
+    }
+
     input?.addEventListener('input', () => {
       clearTimeout(timer);
       const val = input.value.trim();
       if (val.length < 3) return;
-      timer = setTimeout(() => { window.location.href = `/books/search?q=${encodeURIComponent(val)}`; }, 500);
+      timer = setTimeout(() => {
+        window.location.href = `/books/search?q=${encodeURIComponent(val)}`;
+      }, 500);
     });
   </script>
 </Layout>
