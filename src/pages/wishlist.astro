@@ -18,16 +18,16 @@ const entries = await getLibrary({ wishlist: true, userId: user.id });
     </div>
   ) : (
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
-      {entries.map(({ book }) => (
+      {entries.map(({ book, userBook }) => (
         <a href={`/books/${book.id}`} class="group flex flex-col gap-2">
-          <div class="cover-ratio-box rounded-lg overflow-hidden bg-gray-800">
+          <div class="cover-ratio-box rounded-lg overflow-hidden bg-stone-100 border border-stone-200">
             {(userBook?.coverUrl ?? book.coverUrl) ? (
               <img src={userBook?.coverUrl ?? book.coverUrl} alt={book.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
             ) : (
-              <div class="w-full h-full flex items-center justify-center text-4xl text-gray-600">📖</div>
+              <div class="w-full h-full flex items-center justify-center text-4xl text-stone-300">📖</div>
             )}
           </div>
-          <p class="text-sm font-medium leading-tight line-clamp-2">{book.title}</p>
+          <p class="text-sm font-medium leading-tight line-clamp-2" style="color:var(--text)">{book.title}</p>
         </a>
       ))}
     </div>

@@ -29,7 +29,7 @@ export async function getLibrary(filters: {
   return query.where(and(...conditions));
 }
 
-export async function getBookWithDetails(bookId: string) {
+export async function getBookWithDetails(bookId: string, userId: string) {
   const [book] = await db.select().from(books).where(eq(books.id, bookId));
   if (!book) return null;
 
@@ -39,7 +39,8 @@ export async function getBookWithDetails(bookId: string) {
     .innerJoin(authors, eq(bookAuthors.authorId, authors.id))
     .where(eq(bookAuthors.bookId, bookId));
 
-  const [userBook] = await db.select().from(userBooks).where(eq(userBooks.bookId, bookId));
+  const [userBook] = await db.select().from(userBooks)
+    .where(and(eq(userBooks.bookId, bookId), eq(userBooks.userId, userId)));
 
   const bookTagRows = await db
     .select({ tag: tags })
