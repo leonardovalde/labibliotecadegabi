@@ -8,7 +8,10 @@ export async function getLibrary(filters: {
   search?: string;
   wishlist?: boolean;
   userId: string;
-} ) {
+  sort?: 'title' | 'author' | 'year' | 'rating' | 'recent';
+}) {
+  const sort = filters.sort ?? 'recent';
+
   let query = db
     .select({ userBook: userBooks, book: books })
     .from(userBooks)
@@ -26,7 +29,18 @@ export async function getLibrary(filters: {
     sql`unaccent(lower(${books.title})) like unaccent(lower(${'%' + filters.search + '%'}))`
   );
 
-  return query.where(and(...conditions));
+  query = query.where(and(...conditions));
+
+  if (sort === 'title') return query.orderBy(sql`lower(${books.title}) asc`);
+  if (sort === 'year')   return query.orderBy(sql`${books.yearPublished} desc nulls last`);
+  if (sort === 'rating') return query.orderBy(sql`${userBooks.rating} desc nulls last`);
+  if (sort === 'author') {
+    return query
+      .leftJoin(bookAuthors, eq(bookAuthors.bookId, books.id))
+      .leftJoin(authors, eq(authors.id, bookAuthors.authorId))
+      .orderBy(sql`lower(${authors.name}) asc nulls last`);
+  }
+  return query.orderBy(sql`${userBooks.createdAt} desc`); // recent
 }
 
 export async function getBookWithDetails(bookId: string, userId: string) {

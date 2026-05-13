@@ -8,8 +8,9 @@ if (!user) return Astro.redirect('/login');
 const url = Astro.url;
 const status = url.searchParams.get('status') ?? '';
 const search = url.searchParams.get('search') ?? '';
+const sort = (url.searchParams.get('sort') ?? 'recent') as 'title' | 'author' | 'year' | 'rating' | 'recent';
 
-const entries = await getLibrary({ status: status || undefined, search: search || undefined, userId: user.id });
+const entries = await getLibrary({ status: status || undefined, search: search || undefined, userId: user.id, sort });
 
 const STATUS_LABELS: Record<string, string> = {
   quiero_leer: 'Quiero leer',
@@ -42,6 +43,7 @@ const STATUS_LABELS: Record<string, string> = {
     </div>
     <form method="get" class="flex gap-2 items-center">
       <input type="hidden" name="status" value={status} />
+      <input type="hidden" name="sort" value={sort} />
       <input
         name="search"
         value={search}
@@ -50,6 +52,28 @@ const STATUS_LABELS: Record<string, string> = {
       />
       <button class="bg-stone-800 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-stone-900 transition-colors">Buscar</button>
     </form>
+  </div>
+
+  <!-- Sort -->
+  <div class="flex gap-1 items-center flex-wrap mb-6">
+    <span class="text-xs opacity-50 mr-1">Ordenar:</span>
+    {[
+      { value: 'recent', label: 'Reciente' },
+      { value: 'title',  label: 'Título A-Z' },
+      { value: 'author', label: 'Autor' },
+      { value: 'year',   label: 'Año' },
+      { value: 'rating', label: '★ Calificación' },
+    ].map(s => (
+      <a
+        href={`/?status=${status}&search=${search}&sort=${s.value}`}
+        class="text-xs px-2.5 py-1 rounded-md border transition-all"
+        style={sort === s.value
+          ? 'background:var(--accent);color:var(--accent-text);border-color:var(--accent)'
+          : 'background:var(--bg-card);color:var(--text-muted);border-color:var(--border)'}
+      >
+        {s.label}
+      </a>
+    ))}
   </div>
 
   <!-- Grid de libros -->
