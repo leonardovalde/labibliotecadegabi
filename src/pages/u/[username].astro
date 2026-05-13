@@ -37,7 +37,18 @@ const entries = await getLibrary({ userId: user.id });
                 <form method="post" action="/api/social/follow">
                   <input type="hidden" name="targetId" value={user.id} />
                   <input type="hidden" name="username" value={user.username} />
-                  <button class={`text-xs px-3 py-1.5 rounded-md font-medium transition-colors flex-shrink-0 ${following_ ? 'bg-stone-100 text-stone-600 border border-stone-200 hover:border-red-300 hover:text-red-500' : 'bg-stone-800 text-white hover:bg-stone-900'}`}>
+                  <button
+                    class="text-xs px-3 py-1.5 rounded-md font-medium flex-shrink-0 transition-all"
+                    style={following_
+                      ? "background:var(--border);color:var(--text-muted);border:1px solid var(--border)"
+                      : "background:var(--accent);color:var(--accent-text)"}
+                    onmouseover={following_
+                      ? "this.style.borderColor='#ef4444';this.style.color='#ef4444'"
+                      : "this.style.opacity='0.85'"}
+                    onmouseout={following_
+                      ? "this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'"
+                      : "this.style.opacity='1'"}
+                  >
                     {following_ ? 'Siguiendo' : 'Seguir'}
                   </button>
                 </form>
