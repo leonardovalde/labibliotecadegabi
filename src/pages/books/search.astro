@@ -3,7 +3,10 @@ import Layout from '../../layouts/Layout.astro';
 import { searchBooks, getCoverUrl, getCoverByIsbn } from '../../lib/openlibrary';
 
 const query = Astro.url.searchParams.get('q') ?? '';
-const results = query ? await searchBooks(query) : [];
+let results: Awaited<ReturnType<typeof searchBooks>> = [];
+if (query) {
+  results = await searchBooks(query);
+}
 ---
 
 <Layout title="Buscar libro">

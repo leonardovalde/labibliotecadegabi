@@ -31,10 +31,16 @@ export function getCoverByIsbn(isbn: string, size: 'S' | 'M' | 'L' = 'L') {
 }
 
 export async function searchBooks(query: string, limit = 20): Promise<OLSearchResult[]> {
-  const url = `${BASE}/search.json?q=${encodeURIComponent(query)}&limit=${limit}&fields=key,title,author_name,author_key,first_publish_year,isbn,cover_i,number_of_pages_median,language,subject,series`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.docs ?? [];
+  try {
+    const url = `${BASE}/search.json?q=${encodeURIComponent(query)}&limit=${limit}&fields=key,title,author_name,author_key,first_publish_year,isbn,cover_i,number_of_pages_median,language,subject,series`;
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.docs ?? [];
+  } catch (e) {
+    console.error('[openlibrary] search failed:', e);
+    return [];
+  }
 }
 
 export async function getAuthor(authorKey: string): Promise<OLAuthor | null> {
