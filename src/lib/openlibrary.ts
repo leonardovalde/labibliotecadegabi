@@ -33,7 +33,9 @@ export function getCoverByIsbn(isbn: string, size: 'S' | 'M' | 'L' = 'L') {
 export async function searchBooks(query: string, limit = 20): Promise<OLSearchResult[]> {
   try {
     const url = `${BASE}/search.json?q=${encodeURIComponent(query)}&limit=${limit}&fields=key,title,author_name,author_key,first_publish_year,isbn,cover_i,number_of_pages_median,language,subject,series`;
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'LabibliotecadeGabi/1.0 (gabilibrary.site)' },
+    });
     if (!res.ok) return [];
     const text = await res.text();
     if (text.startsWith('<')) return []; // HTML response = error page
