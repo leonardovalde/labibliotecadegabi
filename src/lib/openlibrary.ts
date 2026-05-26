@@ -35,7 +35,9 @@ export async function searchBooks(query: string, limit = 20): Promise<OLSearchRe
     const url = `${BASE}/search.json?q=${encodeURIComponent(query)}&limit=${limit}&fields=key,title,author_name,author_key,first_publish_year,isbn,cover_i,number_of_pages_median,language,subject,series`;
     const res = await fetch(url);
     if (!res.ok) return [];
-    const data = await res.json();
+    const text = await res.text();
+    if (text.startsWith('<')) return []; // HTML response = error page
+    const data = JSON.parse(text);
     return data.docs ?? [];
   } catch (e) {
     console.error('[openlibrary] search failed:', e);
